@@ -1,0 +1,87 @@
+export const styles = {
+  container: {
+    display: "flex",
+    gap: "40px",
+    padding: "20px",
+    background: "#fff",
+    borderRadius: "8px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+  },
+  imageContainer: {
+    flex: "0 0 300px",
+  },
+  image: {
+    width: "100%",
+    borderRadius: "8px",
+  },
+  detailsContainer: {
+    flex: "1",
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
+  },
+  title: {
+    fontSize: "24px",
+    fontWeight: "600",
+    color: "#333",
+    margin: 0,
+  },
+  description: {
+    fontSize: "16px",
+    color: "#666",
+  },
+  price: {
+    fontSize: "20px",
+    color: "#e74c3c",
+    fontWeight: "bold",
+  },
+  quantitySection: {
+    display: "flex",
+    alignItems: "center",
+    gap: "12px",
+    marginTop: "12px",
+  },
+  label: {
+    fontSize: "16px",
+    color: "#333",
+  },
+  quantityControls: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  },
+  qtyButton: {
+    width: "32px",
+    height: "32px",
+    backgroundColor: "#eee",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "18px",
+    textAlign: "center",
+  },
+  qtyInput: {
+    width: "50px",
+    textAlign: "center",
+    fontSize: "16px",
+    border: "1px solid #ccc",
+    borderRadius: "4px",
+    height: "32px",
+  },
+  addToCart: {
+    marginTop: "16px",
+    padding: "10px 20px",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer",
+    fontSize: "16px",
+  },
+  loading: {
+    textAlign: "center",
+    fontSize: "18px",
+    color: "#666",
+    marginTop: "40px",
+  },
+};
