@@ -25,6 +25,7 @@ import { initFacebookSDK } from "./../../utils";
 const ProductDetailsComponent = ({ idProduct }) => {
   const [num, setNum] = useState(1);
   const user = useSelector((state) => state.user);
+  const order = useSelector((state) => state.order);
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();

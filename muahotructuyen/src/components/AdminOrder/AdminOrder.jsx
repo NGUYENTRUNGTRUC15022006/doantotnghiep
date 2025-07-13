@@ -10,6 +10,7 @@ import ModalComponent from "../ModalComponent/ModalComponent";
 import * as OrderService from "../../services/OrderService";
 import { useQuery } from "@tanstack/react-query";
 import { useSelector } from "react-redux";
+import * as message from "../MessageComponent/MessageComponent";
 
 const AdminOrder = () => {
   const user = useSelector((state) => state?.user);
@@ -20,52 +21,147 @@ const AdminOrder = () => {
   const queryOrder = useQuery({ queryKey: ["orders"], queryFn: getAllOrders });
   const { isLoading: isLoadingOrders, data: orders } = queryOrder;
 
-const columns = [
-  {
-    title: "Tên",
-    dataIndex: "shippingAddress",
-    render: (shippingAddress) => shippingAddress?.fullName,
-  },
-  {
-    title: "Số điện thoại",
-    dataIndex: "shippingAddress",
-    render: (shippingAddress) => shippingAddress?.phone,
-  },
-  {
-    title: "Địa chỉ",
-    dataIndex: "shippingAddress",
-    render: (shippingAddress) => shippingAddress?.address,
-  },
-  {
-    title: "Tiền hàng",
-    dataIndex: "itemsPrice",
-    render: (price) => price?.toLocaleString() + " VND",
-  },
-  {
-    title: "Tiền ship",
-    dataIndex: "shippingPrice",
-    render: (price) => price?.toLocaleString() + " VND",
-  },
-  {
-    title: "Tổng tiền",
-    dataIndex: "totalPrice",
-    render: (price) => price?.toLocaleString() + " VND",
-  },
-  {
-    title: "Phương thức thanh toán  ",
-    dataIndex: "paymentMethod",
-    render: (price) => {
-      if(price === "cod"){
-        return "Thanh toán khi nhận hàng"
-      }
+  const handleUpdateStatus = async (orderId, newStatus) => {
+    try {
+      await OrderService.updateOrderStatus(
+        orderId,
+        newStatus,
+        user?.access_token
+      );
+      message.success("Cập nhật trạng thái thành công!");
+      queryOrder.refetch();
+    } catch (error) {
+      message.error("Cập nhật thất bại!");
+      console.error("Lỗi cập nhật trạng thái:", error);
+    }
+  };
+  const columns = [
+    {
+      title: "Tên",
+      dataIndex: "shippingAddress",
+      render: (shippingAddress) => shippingAddress?.fullName,
     },
-  },
-  {
-    title: "Ngày mua",
-    dataIndex: "createdAt",
-    render: (createdAt) => new Date(createdAt).toLocaleString(),
-  },
-];
+    {
+      title: "Số điện thoại",
+      dataIndex: "shippingAddress",
+      render: (shippingAddress) => shippingAddress?.phone,
+    },
+    {
+      title: "Địa chỉ",
+      dataIndex: "shippingAddress",
+      render: (shippingAddress) => shippingAddress?.address,
+    },
+    {
+      title: "Tổng tiền",
+      dataIndex: "totalPrice",
+      render: (price) => price?.toLocaleString() + " VND",
+    },
+    {
+      title: "Phương thức thanh toán  ",
+      dataIndex: "paymentMethod",
+      render: (price) => {
+        if (price === "cod") {
+          return "Thanh toán khi nhận hàng";
+        }
+      },
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      render: (status) => {
+        const statusMap = {
+          pending: { text: "Chờ xác nhận", color: "#faad14" }, // vàng
+          confirmed: { text: "Đã xác nhận", color: "#1890ff" }, // xanh dương
+          shipping: { text: "Đang giao", color: "#faad14" }, // vàng
+          delivered: { text: "Đã giao", color: "#52c41a" }, // xanh lá
+          cancelled: { text: "Đã huỷ", color: "#f5222d" }, // đỏ
+        };
+
+        const item = statusMap[status] || {
+          text: "Không xác định",
+          color: "#ccc",
+        };
+
+        return (
+          <span style={{ fontWeight: 600, color: item.color }}>
+            {item.text}
+          </span>
+        );
+      },
+    },
+    {
+      title: "Cập nhật trạng thái",
+      dataIndex: "status",
+      render: (status, record) => {
+        const buttonStyle = {
+          display: "flex",
+          gap: 8,
+          flexWrap: "wrap",
+        };
+
+        return (
+          <div style={buttonStyle}>
+            {status === "pending" && (
+              <Button
+                size="small"
+                style={{
+                  backgroundColor: "#1890ff",
+                  color: "#fff",
+                  border: "none",
+                }}
+                onClick={() => handleUpdateStatus(record._id, "confirmed")}
+              >
+                Xác nhận
+              </Button>
+            )}
+
+            {status === "confirmed" && (
+              <Button
+                size="small"
+                style={{
+                  backgroundColor: "#faad14",
+                  color: "#fff",
+                  border: "none",
+                }}
+                onClick={() => handleUpdateStatus(record._id, "shipping")}
+              >
+                Đang giao
+              </Button>
+            )}
+
+            {status === "shipping" && (
+              <Button
+                size="small"
+                style={{
+                  backgroundColor: "#52c41a",
+                  color: "#fff",
+                  border: "none",
+                }}
+                onClick={() => handleUpdateStatus(record._id, "delivered")}
+              >
+                Đã giao
+              </Button>
+            )}
+
+            {status !== "cancelled" && status !== "delivered" && (
+              <Button
+                size="small"
+                danger
+                style={{
+                  backgroundColor: "#c4421a",
+                  color: "#fff",
+                  border: "none",
+                }}
+                onClick={() => handleUpdateStatus(record._id, "cancelled")}
+              >
+                Huỷ
+              </Button>
+            )}
+          </div>
+        );
+      },
+    },
+  ];
   const dataTable =
     orders?.data.length &&
     orders?.data.map((userItem) => {

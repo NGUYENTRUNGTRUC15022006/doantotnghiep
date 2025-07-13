@@ -1,4 +1,5 @@
 const Order = require("../models/OrderProduct");
+const EmailService = require("../services/EmailService");
 
 const createOrder = (newOrder) => {
   return new Promise(async (resolve, reject) => {
@@ -12,6 +13,7 @@ const createOrder = (newOrder) => {
       phone,
       orderItems,
       user,
+      email,
     } = newOrder;
     try {
       const createOrder = await Order.create({
@@ -24,6 +26,7 @@ const createOrder = (newOrder) => {
         user,
       });
       if (createOrder) {
+        await EmailService.sendEmailCreateOrder(email, orderItems);
         resolve({
           status: "OK",
           message: "SUCCESS",
@@ -117,5 +120,5 @@ module.exports = {
   getDetailsAllOrder,
   getDetailsOrder,
   cancleOrder,
-  getAllOrder
+  getAllOrder,
 };

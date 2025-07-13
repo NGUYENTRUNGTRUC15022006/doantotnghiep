@@ -46,19 +46,32 @@ const MyOrder = () => {
       }
     );
   };
+  const statusMap = {
+    pending: { label: "Chờ xác nhận", color: "#faad14" },
+    confirmed: { label: "Đã xác nhận", color: "#1890ff" },
+    shipping: { label: "Đang giao", color: "#faad14" },
+    delivered: { label: "Đã giao", color: "#52c41a" },
+    cancelled: { label: "Đã huỷ", color: "#f5222d" },
+  };
   return (
     <div>
-      <div style={{height: '767px',alignItems:'center',display:'flex',flexDirection:'column'}}>
+      <div
+        style={{
+          minHeight: "77.4vh",
+          alignItems: "center",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <h1 style={{}}>Đơn hàng của tôi</h1>
         <div
           style={{
-            boxShadow:" rgb(33, 47, 61) 1px 2px 5px",
+            boxShadow: " rgb(33, 47, 61) 1px 2px 5px",
             border: "2px solid rgb(33, 47, 61)",
             margin: "20px 0",
             padding: 20,
             background: "#f7f7f7",
-            height: "100%",
-            width: "800px",
+            minWidth: "800px",
             borderRadius: "5px",
           }}
         >
@@ -71,6 +84,10 @@ const MyOrder = () => {
             </div>
           ) : (
             data?.map((item) => {
+              const statusInfo = statusMap[item?.status] || {
+                label: "Không xác định",
+                color: "#000",
+              };
               return (
                 <div
                   key={item?._id}
@@ -84,7 +101,12 @@ const MyOrder = () => {
                 >
                   {/* Trạng thái đơn hàng */}
                   <div>
-                    <strong style={{ color: "red" }}>Trạng thái</strong>
+                    <strong style={{ color: "red" }}>
+                      Trạng thái:{" "}
+                      <span style={{ color: statusInfo.color }}>
+                        {statusInfo.label}
+                      </span>
+                    </strong>
                     <div>
                       <span style={{ color: "#e74c3c" }}>
                         Giao hàng:{" "}
@@ -138,7 +160,9 @@ const MyOrder = () => {
                         <span>{product?.name}</span>
                       </div>
                       <div>
-                        <span>Đơn giá: {product?.price?.toLocaleString()} VNĐ</span>
+                        <span>
+                          Đơn giá: {product?.price?.toLocaleString()} VNĐ
+                        </span>
                         <div>Số lượng: {product?.amount}</div>
                       </div>
                     </div>
@@ -169,7 +193,7 @@ const MyOrder = () => {
                       }}
                       onClick={() => {
                         handelCancle(item?._id);
-                        message.success("Hủy đơn hàng thành công")
+                        message.success("Hủy đơn hàng thành công");
                       }}
                     >
                       Hủy đơn hàng

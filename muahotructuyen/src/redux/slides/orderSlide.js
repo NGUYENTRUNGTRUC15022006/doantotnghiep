@@ -1,25 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  orderItems: [
-    // {
-    //   name: { type: String, required: true },
-    //   amount: { type: Number, required: true },
-    //   image: { type: String, required: true },
-    //   price: { type: Number, required: true },
-    //   product: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Product",
-    //     required: true,
-    //   },
-    // },
-  ],
-  shippingAddress: {
-    // fullName: { type: String, required: true },
-    // address: { type: String, required: true },
-    // city: { type: String, required: true },
-    // phone: { type: Number, required: true },
-  },
+  orderItems: [],
+  shippingAddress: {},
   paymentMethod: "",
   itemsPrice: 0,
   shippingPrice: 0,
@@ -37,7 +20,7 @@ export const orderSlide = createSlice({
   initialState,
   reducers: {
     addOrderProduct: (state, action) => {
-      const orderItem = action.payload; // ✅ đơn giản
+      const orderItem = action.payload;
       if (!orderItem || !orderItem.product) return;
 
       const existingItem = state.orderItems.find(

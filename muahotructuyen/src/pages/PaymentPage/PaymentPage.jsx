@@ -72,6 +72,7 @@ const PaymentPage = () => {
     return UserService.updateUser(id, token, rest);
   });
   const mutationAddOrder = useMutationHooks((data) => {
+    console.log('data',data)
     const { token, ...rest } = data;
     return OrderService.createOrder(token, { ...rest });
   });
@@ -123,6 +124,8 @@ const PaymentPage = () => {
           shippingPrice: shippingFee,
           totalPrice: totalPrice,
           user: user?.id,
+          email: user?.email,
+          status: "pending",
         },
         {
           onSuccess: () => {
